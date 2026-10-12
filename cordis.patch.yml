@@ -1,0 +1,51 @@
+# dsh-phocinae-screen bundle patch — mounts the offline context screen.
+#
+# Layer order: this bundle patch, then the profile patch, then
+# $DSH_HOME/cordis.patch.yml, then --patch overlays; later layers win.
+# Every key below has a documented default in lib/config.mjs, so this file can be
+# reduced to `enabled: true` and the plugin still works.
+- insert:
+    - id: phocinae-screen
+      name: dsh-phocinae-screen
+      config:
+        # Local Phocinae decision service. Loopback is enforced: screening states
+        # carry raw tool output, so a non-loopback endpoint is a load-time error
+        # unless `allowRemoteEndpoint: true` is set deliberately.
+        endpoint: http://127.0.0.1:8155/v1/systemone
+        model: Phocinae-Largha-150M-v1
+        # Measured on CPU 2026-10-11: a 30-block batch completes in 0.50 s wall
+        # (16.6 ms per block), so 5 s covers roughly a 300-block batch.
+        timeoutMs: 5000
+        # Blocks per batch request. The server caps a batch at 64; staying below
+        # that leaves headroom so one slow block cannot push the batch over the
+        # timeout.
+        maxBatch: 32
+        # A single block is cut at this many characters before scoring.
+        maxBlockChars: 4000
+        # Blocks shorter than this are never dropped and never scored.
+        minBlockChars: 200
+        # score >= keepAt -> keep; score <= dropAt -> drop.
+        # Between the two the block is KEPT and reported as uncertain, because
+        # the 150M model is not calibrated for every domain.
+        keepAt: 6
+        dropAt: 3
+        # Refuse the screen when it would remove more than this share of blocks,
+        # or of characters, and hand the input back whole instead.
+        maxDropRatio: 0.75
+        maxDropCharsRatio: 0.9
+        # Automatic screening of large tool results.
+        hook:
+          # Off by default: turning it on changes what the model reads for every
+          # matching tool, which is a deployment decision, not a plugin default.
+          enabled: false
+          # Tool names, `prefix*` wildcards, or `*`. Multiplied by minChars, an
+          # armed hook screens only results big enough to be worth the round trip.
+          tools:
+            - '*'
+          minChars: 8000
+          # closed = a service outage is announced in the text and handed through
+          #          (never blocks a tool call that actually succeeded).
+          # open   = a service outage is silent.
+          failMode: closed
+        # Log every screen decision through the host logger.
+        audit: true

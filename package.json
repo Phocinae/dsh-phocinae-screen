@@ -1,0 +1,69 @@
+{
+  "name": "dsh-phocinae-screen",
+  "description": "NOT FOR RELEASE — measurement harness. It holds the labelled-set scripts that show why Phocinae ships no context-screening plugin: the 2-10 score question carries no signal, the model caught 0/6 invoice inconsistencies that plain arithmetic caught 6/6, and 8-way tool routing scores 2/12 against a random baseline of 1.5. Published as a reproducible negative result, not as a plugin.",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Phocinae/dsh-phocinae-screen.git"
+  },
+  "homepage": "https://github.com/Phocinae/dsh-phocinae-screen#readme",
+  "bugs": {
+    "url": "https://github.com/Phocinae/dsh-phocinae-screen/issues"
+  },
+  "author": "PerryLink",
+  "type": "module",
+  "main": "./index.mjs",
+  "exports": {
+    ".": "./index.mjs",
+    "./lib/screen.mjs": "./lib/screen.mjs",
+    "./lib/hook.mjs": "./lib/hook.mjs",
+    "./lib/config.mjs": "./lib/config.mjs",
+    "./lib/protocol.mjs": "./lib/protocol.mjs",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.mjs",
+    "tools.mjs",
+    "lib",
+    "skills",
+    "cordis.patch.yml",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "manifestVersion": 1,
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "phocinae",
+    "decision-model",
+    "context-engineering",
+    "context-compression",
+    "relevance-screening",
+    "local-inference",
+    "cordis-plugin"
+  ],
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0",
+    "dsh": ">=0.1.6-0 <0.2.0 || >=0.2.0-0 <0.3.0"
+  },
+  "scripts": {
+    "test": "node --test \"test/*.test.mjs\"",
+    "test:live": "node test/live.test.mjs",
+    "verify:artifacts": "node scripts/verify-artifacts.mjs",
+    "prepublishOnly": "node -e \"console.error('Reminder: dsh-phocinae-screen is a measurement harness, not a plugin; npm will refuse because private=true.')\""
+  },
+  "license": "Apache-2.0",
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/sponsors/PerryLink"
+  },
+  "private": true
+}
